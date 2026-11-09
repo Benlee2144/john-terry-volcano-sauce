@@ -10,6 +10,7 @@ import Lenis from 'lenis';
 import { SAUCES } from './data.js';
 import { GLWorld, createWorldState } from './gl/world.js';
 import { initChoreo } from './choreo.js';
+import { createStepper } from './stepper.js';
 
 const html = document.documentElement;
 
@@ -96,8 +97,10 @@ async function boot() {
   });
 
   const lenis = new Lenis({ lerp: 0.13, wheelMultiplier: 1, smoothWheel: true });
-  if (import.meta.env.DEV) window.__volcano = { lenis, world, gsap, gl };
-  const update = initChoreo({ world, lenis });
+  const stepper = createStepper(lenis);
+  lenis.options.virtualScroll = stepper.input;
+  if (import.meta.env.DEV) window.__volcano = { lenis, world, gsap, gl, stepper };
+  const update = initChoreo({ world, stepper });
   lenis.on('scroll', ScrollTrigger.update);
 
   // Pointer melts the crust and nudges the bottle

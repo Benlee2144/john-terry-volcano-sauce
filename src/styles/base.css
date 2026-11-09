@@ -44,7 +44,7 @@ em { font-style: italic; }
 
 /* Layers: lava < page content < 3D bottle < chrome */
 #lava, #bottle {
-  position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100lvh;
+  position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100svh;
   display: none; pointer-events: none;
 }
 #lava { z-index: 0; }

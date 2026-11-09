@@ -16,7 +16,7 @@ html { overflow-x: clip; }
 /* Every text block on live lava carries its own shadow */
 .hero-names, .hero-foot, .manifesto-text, #scale h2, .scale-sub, .scale-name, .scale-n,
 .chapter h3, .ch-rating, .ch-tag, .ch-desc, .wall-head h2, .wall-head p, .card figcaption,
-.lede, .makers-copy p, .makers-copy footer, .gauge-read, .faceoff h2 {
+.beat h2, .beat-text, .beat blockquote p, .beat footer, .gauge-read, .faceoff h2 {
   text-shadow: var(--read-shadow, 0 1px 3px rgba(0,0,0,.85), 0 2px 18px rgba(0,0,0,.95));
 }
 .hero-foot { font-size: clamp(11px, .88vw, 14px); font-weight: 600; }
@@ -24,26 +24,22 @@ html { overflow-x: clip; }
 .hero-foot .hero-cue { color: var(--molten); }
 .kicker { font-size: clamp(11.5px, .9vw, 14px); font-weight: 600; }
 
-.scale-sub, .wall-head > p:last-child, .makers-copy > p:not(.lede) { color: #fff; }
+.scale-sub, .wall-head > p:last-child { color: #fff; }
 .ch-desc { color: #fff; font-size: clamp(20px, 1.65vw, 28px); }
 .ch-tag { font-size: clamp(30px, 3vw, 52px); }
 .ch-rating { font-weight: 600; font-size: clamp(12px, .95vw, 15px); }
 .ch-peppers { font-size: clamp(10.5px, .8vw, 12.5px); font-weight: 600; }
 .ch-peppers li { background: rgba(6,3,2,.82); border-color: var(--accent); color: #fff; text-shadow: none; }
 .card figcaption { font-size: 12px; font-weight: 600; color: #fff; }
-.makers-copy footer { font-size: 12px; font-weight: 600; color: #fff; }
-.makers-copy footer span { color: #ffd9b0; }
 .gauge-read { color: #fff; font-size: 11px; font-weight: 600; }
 .scale-name { font-size: 11px; font-weight: 600; color: #fff; }
 
 /* Reading areas sit on a pool of shade, so cracks pass behind instead of through the words */
-.motion #manifesto::before, .motion #scale::before, #makers .makers-body::before, .motion #wall::before {
+.motion #manifesto::before, .motion #scale::before, .motion #story::before, .motion #wall::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(ellipse 85% 75% at 50% 50%, rgba(5,2,1,.8), rgba(5,2,1,.46) 68%, rgba(5,2,1,.22));
 }
 .manifesto-text, .scale-inner, .wall-track { position: relative; }
-#makers .makers-body { position: relative; }
-#makers .makers-body > * { position: relative; }
 .motion .stage-scrim {
   background:
     linear-gradient(90deg, rgba(5,2,1,.93), rgba(5,2,1,.62) 26%, rgba(5,2,1,.06) 42%, rgba(5,2,1,.06) 58%, rgba(5,2,1,.62) 74%, rgba(5,2,1,.93)),
@@ -54,7 +50,7 @@ html { overflow-x: clip; }
 #find { --ink-hot: #0d0201; color: var(--ink-hot); }
 #find .kicker { color: var(--ink-hot); font-weight: 700; font-size: clamp(12px, 1vw, 15px); }
 .find-sub { font-weight: 400; font-size: clamp(25px, 2.3vw, 40px); text-wrap: balance; }
-.ch-desc, .scale-sub, .lede, .makers-copy p, .makers-copy blockquote { text-wrap: pretty; }
+.ch-desc, .scale-sub, .beat blockquote { text-wrap: pretty; }
 .find-links span { font-size: 12.5px; font-weight: 700; }
 .foot { font-size: 11.5px; font-weight: 700; }
 .motion .find-inner, .motion .foot { position: relative; }
@@ -67,7 +63,7 @@ html { overflow-x: clip; }
 .fire-c { gap: 21vw; }
 
 /* SCALE: pinned */
-.motion #scale { height: 100vh; height: 100lvh; padding: clamp(66px, 11vh, 110px) var(--gutter) 5vh; overflow: hidden; }
+.motion #scale { height: 100vh; height: 100svh; padding: clamp(66px, 11vh, 110px) var(--gutter) 5vh; overflow: hidden; }
 .motion .scale-inner { display: flex; flex-direction: column; height: 100%; }
 .motion #scale h2 { margin-top: 14px; font-size: min(5.3vw, 10.4vh); max-width: 73vw; }
 .motion .scale-sub { margin-top: 16px; }
@@ -92,7 +88,7 @@ html { overflow-x: clip; }
 .scale-name { position: absolute; left: 0; top: 100%; margin-top: 7px; transform: translateX(-50%); }
 
 /* LINEUP: pinned pull-back */
-.motion #lineup { padding: 0; height: 100vh; height: 100lvh; overflow: hidden; }
+.motion #lineup { padding: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .motion .lineup-frame { position: absolute; inset: 0; height: 100%; }
 .motion .lineup-frame img { height: 100%; object-position: 50% 50%; transform-origin: 62% 52%; }
 .motion .lineup-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(5,2,1,.9), transparent 38%); }
@@ -114,12 +110,15 @@ html { overflow-x: clip; }
 /* FACE-OFF: pinned collision */
 .motion #makers { padding: 0 0 18vh; }
 .faceoff-pin { display: flex; align-items: center; padding-inline: var(--gutter); }
-.motion .faceoff-pin { height: 100vh; height: 100lvh; overflow: hidden; }
+.motion .faceoff-pin { height: 100vh; height: 100svh; overflow: hidden; }
 .faceoff { width: 100%; grid-template-rows: auto auto; row-gap: 3vh; }
 .faceoff h2 { grid-row: 2; font-size: clamp(60px, 8.6vw, 172px); }
 .portrait { grid-row: 1; }
 .motion .portrait { height: 60vh; will-change: transform; }
-.makers-body { padding-inline: var(--gutter); }
+
+/* One gesture, one stop: the page never pans under the finger. The phone gallery still swipes sideways. */
+html.motion { touch-action: pinch-zoom; overscroll-behavior: none; }
+.motion #wall { touch-action: pan-x pinch-zoom; }
 
 /* VETERAN OWNED */
 .vet-mark { color: var(--molten); font-weight: 700; }
@@ -180,6 +179,8 @@ html:not(.motion) .ch-art { margin-block: 18px; }
   .find-inner { padding-top: 6.5vh; }
   .find-emblem { max-height: 13vh; }
   .find-links { margin-top: 10px; }
+  .founders { max-height: 17vh; }
+  .beat footer span { display: none; }
 }
 
 /* Phones and low-core machines: the same page without the paint-heavy extras */

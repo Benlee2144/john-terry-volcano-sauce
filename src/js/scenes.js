@@ -8,6 +8,7 @@ const lite = () => document.documentElement.classList.contains('lite');
 
 export const STAGE_P0 = 0.03;
 export const STAGE_P1 = 0.865;
+export const STAGE_P2 = 0.93; // Amy's has finished turning to show her back label
 export const stageAt = (p) => STAGE_P0 + (STAGE_P1 - STAGE_P0) * (p / (SAUCES.length - 1));
 
 export function setupHero({ tl }) {
@@ -205,16 +206,27 @@ export function setupFaceoff({ tl }) {
   tl.fromTo(h.chars, { yPercent: 130, scale: 1.6 }, { yPercent: 0, scale: 1, ease: 'expo.out', duration: 0.14, stagger: 0.006 }, 0.55);
 }
 
-export function setupBody(ScrollTrigger) {
-  gsap.fromTo('.founders', { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.1 }, {
-    clipPath: 'inset(0% 0% 0% 0%)', scale: 1, ease: 'none',
-    scrollTrigger: { trigger: '.founders', start: 'top 95%', end: 'top 30%', scrub: 0.4 },
+/** Each beat of the story rests at storyAt(i), one screen of the pin apart. */
+export const storyAt = (i) => 0.1 + i * 0.2;
+
+export function setupStory({ tl }) {
+  const beats = $$('.beat');
+  beats.forEach((beat, i) => {
+    const head = new SplitText($$('h2', beat), { type: 'lines', mask: 'lines' }).lines;
+    const rest = $$('.kicker, .beat-text, .vet-badge, blockquote, .founders', beat);
+    const at = storyAt(i);
+    if (i > 0) {
+      gsap.set(beat, { visibility: 'hidden' });
+      tl.set(beat, { visibility: 'visible' }, at - 0.09);
+      tl.fromTo(head, { yPercent: 115 }, { yPercent: 0, ease: 'expo.out', duration: 0.07, stagger: 0.008 }, at - 0.085);
+      tl.fromTo(rest, { autoAlpha: 0, y: 34 }, { autoAlpha: 1, y: 0, ease: 'power3.out', duration: 0.06, stagger: 0.006 }, at - 0.075);
+    }
+    if (i < beats.length - 1) {
+      tl.to(head, { yPercent: -115, ease: 'power3.in', duration: 0.05, stagger: 0.005 }, at + 0.02);
+      tl.to(rest, { autoAlpha: 0, y: -34, ease: 'power2.in', duration: 0.04 }, at + 0.02);
+      tl.set(beat, { visibility: 'hidden' }, at + 0.085);
+    }
   });
-  gsap.from('.makers-copy > *', {
-    y: 44, autoAlpha: 0, stagger: 0.12, duration: 1, ease: 'expo.out',
-    scrollTrigger: { trigger: '.makers-copy', start: 'top 84%', once: true },
-  });
-  return ScrollTrigger.create({ trigger: '.makers-body', start: 'top bottom', end: 'bottom top' });
 }
 
 export function setupFind({ tl }) {

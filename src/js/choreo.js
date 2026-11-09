@@ -5,8 +5,8 @@ import { SAUCES } from './data.js';
 import { Tracks } from './tracks.js';
 import { stageState } from './gl/world.js';
 import {
-  STAGE_P0, STAGE_P1, setupHero, setupManifesto, setupScale, setupStage, setupLineup,
-  setupTape, setupWall, setupFaceoff, setupBody, setupFind,
+  STAGE_P0, STAGE_P1, STAGE_P2, stageAt, storyAt, setupHero, setupManifesto, setupScale, setupStage, setupLineup,
+  setupTape, setupWall, setupFaceoff, setupStory, setupFind,
 } from './scenes.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -64,7 +64,7 @@ const KEYS = [
   ['stage', STAGE_P1, { p: 5 }],
 
   // Amy's turns to show her back label (p runs past 5), then tips over and pours: sauce drips down over everything
-  ['stage', 0.93, { by: 0, brz: 0, bs: 1, gauge: 1, p: 5.5 }],
+  ['stage', STAGE_P2, { by: 0, brz: 0, bs: 1, gauge: 1, p: 5.5 }],
   ['stage', 0.955, { wHead: -0.6, wTail: -0.6, wDir: -1, wDrip: 1 }],
   ['stage', 1, { by: 2.8, brz: 2.5, wHead: 1.6, heat: 0.3, flood: 0, dim: 0.3, haze: 0 }],
   ['lineup', 0, { wTail: 1.6, by: 16, brz: 0, palMix: 0, gauge: 0, embers: 0.35 }],
@@ -99,7 +99,31 @@ function pinned(trigger, length) {
   return st;
 }
 
-export function initChoreo({ world, lenis }) {
+/** Where one scroll comes to rest, in page order: each one is the moment a part has finished arriving. */
+function restingPoints(t, desktop) {
+  const at = (st, f) => st.start + (st.end - st.start) * f;
+  const last = SAUCES.length - 1;
+  const stageY = (p) => at(t.stage, p <= last ? stageAt(p) : STAGE_P1 + (STAGE_P2 - STAGE_P1) * ((p - last) / 0.5));
+  const wallScreens = Math.max(1, Math.round((t.wall.end - t.wall.start) / 1.15 / (window.innerWidth * 0.55)));
+  const wall = desktop
+    ? Array.from({ length: wallScreens + 1 }, (_, k) => at(t.wall, (k / wallScreens) * 0.88))
+    : [at(t.wall, 0.5)];
+  const story = [...document.querySelectorAll('.beat')].map((_, i) => at(t.story, storyAt(i)));
+  return [
+    { y: at(t.hero, 0) },
+    { y: at(t.hero, 0.79) },
+    { y: at(t.manifesto, 0.78) },
+    { y: at(t.scale, 0.78) },
+    ...SAUCES.map((_, i) => ({ y: stageY(i + 0.03), back: stageY(i + 0.4) })),
+    { y: at(t.lineup, 0.84) },
+    ...wall.map((y) => ({ y })),
+    { y: at(t.makers, 0.84) },
+    ...story.map((y) => ({ y })),
+    { y: at(t.find, 0.9) },
+  ];
+}
+
+export function initChoreo({ world, stepper }) {
   ScrollTrigger.config({ ignoreMobileResize: true });
   const desktop = window.matchMedia('(min-width: 821px) and (min-aspect-ratio: 1/1)').matches;
   const vh = (n) => () => window.innerHeight * n;
@@ -121,13 +145,17 @@ export function initChoreo({ world, lenis }) {
   t.wall = wall.st;
   t.makers = pinned('.faceoff-pin', vh(2));
   setupFaceoff(t.makers);
-  t.body = setupBody(ScrollTrigger);
+  t.story = pinned('#story', vh(4.4));
+  setupStory(t.story);
   t.tape2 = setupTape(ScrollTrigger, '#tape2');
   t.find = pinned('#find', vh(2.6));
   setupFind(t.find);
 
   const tracks = new Tracks(KEYS, ['zoomT', 'p']);
-  const resolve = () => tracks.resolve(t);
+  const resolve = () => {
+    tracks.resolve(t);
+    stepper.setStops(restingPoints(t, desktop));
+  };
   ScrollTrigger.addEventListener('refresh', resolve);
   ScrollTrigger.refresh();
   resolve();
@@ -135,7 +163,7 @@ export function initChoreo({ world, lenis }) {
   document.querySelectorAll('[data-goto]').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
-      lenis.scrollTo(t[a.dataset.goto].start + 2, { duration: 1.8 });
+      stepper.goTo(t[a.dataset.goto].start);
     });
   });
 
