@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>John &amp; Terry's Volcano Sauce | Hot Sauce from Knoxville, Tennessee</title>
+  <meta name="description" content="Veteran-owned hot sauce from Knoxville, Tennessee. Six sauces rated on the Volcanic Explosivity Index, from Ryn's Mellow Verde to Amy's Sweet Heat. Natural flavors from locally grown peppers." />
+  <meta name="theme-color" content="#0a0504" />
+  <meta property="og:title" content="John &amp; Terry's Volcano Sauce" />
+  <meta property="og:description" content="Six sauces. One scale. It gets worse." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://benlee2144.github.io/john-terry-volcano-sauce/" />
+  <meta property="og:image" content="https://benlee2144.github.io/john-terry-volcano-sauce/assets/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0504'/%3E%3Cpath d='M6 27 13 11h6l7 16z' fill='%23ff4a0c'/%3E%3Cpath d='M16 13c-1-3 1-5 0-9 3 2 5 5 3 9z' fill='%23ffc23a'/%3E%3C/svg%3E" />
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"LocalBusiness","name":"John and Terry's Spice Of Life","alternateName":"John & Terry's Volcano Sauce","description":"A veteran-owned hot sauce business that likes natural flavors from locally grown peppers.","telephone":"+1-865-938-5719","email":"johnandterryshotsauce@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Knoxville","addressRegion":"TN","addressCountry":"US"},"sameAs":["https://www.facebook.com/profile.php?id=100090587078507"]}
+  </script>
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/sections.css" />
+  <link rel="stylesheet" href="./styles/responsive.css" />
+  <link rel="stylesheet" href="./styles/effects.css" />
+</head>
+<body>
+  <canvas id="lava" aria-hidden="true"></canvas>
+
+  <div id="preloader" aria-hidden="true">
+    <div class="pre-half pre-top"></div>
+    <div class="pre-half pre-bottom"></div>
+    <div class="pre-core">
+      <p class="pre-label">Volcanic Explosivity Index</p>
+      <p class="pre-num"><span id="preNum">0.0</span></p>
+      <svg class="pre-seis" viewBox="0 0 600 80" preserveAspectRatio="none"><path id="preSeis" d="M0 40H600" /></svg>
+    </div>
+  </div>
+
+  <header class="nav">
+    <a class="nav-brand" href="#hero" data-goto="hero">John <i>&amp;</i> Terry's</a>
+    <nav aria-label="Main">
+      <a href="#stage" data-goto="stage">The Sauces</a>
+      <a href="#wall" data-goto="wall">The Art</a>
+      <a href="#makers" data-goto="makers">The Makers</a>
+      <a class="nav-cta" href="#find" data-goto="find">Find a Bottle</a>
+    </nav>
+  </header>
+
+  <aside class="gauge" aria-hidden="true">
+    <div class="gauge-rail"><div class="gauge-fill"></div></div>
+    <p class="gauge-read"><span>VEI</span><b id="gaugeNum">0</b></p>
+  </aside>
+
+  <main>
+    <section id="hero" class="screen">
+      <h1 class="sr">John &amp; Terry's Volcano Sauce, hot sauce from Knoxville, Tennessee</h1>
+      <div class="hero-intro">
+        <p class="hero-names">John &amp; Terry's</p>
+        <p class="hero-static" aria-hidden="true">Volcano Sauce</p>
+        <div class="hero-foot">
+          <p><b class="vet-mark">Veteran owned</b><br />Knoxville, Tennessee</p>
+          <p class="hero-cue"><span>Scroll to raise the heat</span><i></i></p>
+          <p class="hero-right">Natural flavors<br />Locally grown peppers</p>
+        </div>
+      </div>
+      <div class="hero-fire" aria-label="Six sauces. One scale. It gets worse.">
+        <p class="fire-a">Six<br />Sauces.</p>
+        <p class="fire-b">One<br />Scale.</p>
+        <p class="fire-c"><span>It gets</span><span>worse.</span></p>
+      </div>
+    </section>
+
+    <section id="manifesto" class="screen">
+      <p class="manifesto-text">A hot sauce business that likes natural flavors from locally grown peppers. We strive to make the tastiest sauces on the market, <em>and we might burn you with a few.</em></p>
+    </section>
+
+    <section id="scale">
+      <div class="scale-inner">
+        <p class="kicker">The Volcanic Explosivity Index</p>
+        <h2>Geologists rate eruptions from 0 to 8. John &amp; Terry print the same scale on every bottle.</h2>
+        <p class="scale-sub">It was built to measure what comes out of a mountain. Here it measures what happens after dinner.</p>
+        <div class="scale-line" aria-hidden="true"></div>
+      </div>
+      <div class="scale-count" aria-hidden="true">0</div>
+    </section>
+
+    <section id="stage" aria-label="The six sauces">
+      <div class="stage-scrim"></div>
+
+      <article class="chapter" data-sauce="verde" style="--accent:#b9e64c;--fill:.1">
+        <div class="ch-num" aria-hidden="true">1</div>
+        <div class="ch-left">
+          <p class="ch-rating"><b>VEI 1</b> Mild</p>
+          <h3>Ryn's<br />Mellow<br />Verde</h3>
+        </div>
+        <div class="ch-right">
+          <img decoding="async" class="ch-art" src="assets/art/verde.webp" alt="Ryn's Mellow Verde label art" />
+          <p class="ch-tag">Reinforced Flavor</p>
+          <p class="ch-desc">Made to be the green sauce you'll find at any Mexican restaurant. Full of flavor without the bite.</p>
+          <ul class="ch-peppers"><li>A hint of Jalapeño</li><li>Tomatillo</li><li>Poblano</li></ul>
+        </div>
+      </article>
+
+      <article class="chapter" data-sauce="zaxe" style="--accent:#ffe14a;--fill:.16">
+        <div class="ch-num" aria-hidden="true">2</div>
+        <div class="ch-left">
+          <p class="ch-rating"><b>VEI 2</b> Mild</p>
+          <h3>Zaxe<br />Sauce</h3>
+        </div>
+        <div class="ch-right">
+          <img decoding="async" class="ch-art" src="assets/art/zaxe.webp" alt="Zaxe Sauce label art" />
+          <p class="ch-tag">The Nation's #1 Taste Improver</p>
+          <p class="ch-desc">Cut the heat, not the flavor. Full of flavor, a little heat, and most people can handle it.</p>
+          <ul class="ch-peppers"><li>Jalapeño based</li></ul>
+        </div>
+      </article>
+
+      <article class="chapter" data-sauce="ragin" style="--accent:#ff7a2a;--fill:.3">
+        <div class="ch-num" aria-hidden="true">4</div>
+        <div class="ch-left">
+          <p class="ch-rating"><b>VEI 4</b> Medium</p>
+          <h3>Ragin'<br />Cajun</h3>
+        </div>
+        <div class="ch-right">
+          <img decoding="async" class="ch-art" src="assets/art/ragin.webp" alt="Ragin' Cajun label art" />
+          <p class="ch-tag">De Bon Gout</p>
+          <p class="ch-desc">Blended with their own Cajun seasoning. Great on any seafood, and people have injected their Thanksgiving turkeys with it.</p>
+          <ul class="ch-peppers"><li>Serrano based</li><li>A hint of Habanero</li></ul>
+        </div>
+      </article>
+
+      <article class="chapter" data-sauce="shine" style="--accent:#ff5230;--fill:.5">
+        <div class="ch-num" aria-hidden="true">6</div>
+        <div class="ch-left">
+          <p class="ch-rating"><b>VEI 6</b> Hot</p>
+          <h3>Shine<br />the Light</h3>
+        </div>
+        <div class="ch-right">
+          <img decoding="async" class="ch-art" src="assets/art/shine.webp" alt="Shine the Light label art" />
+          <p class="ch-tag">Bloody Hell</p>
+          <p class="ch-desc">Has a bite to it, but a hint of ginger cleans up the heat quickly.</p>
+          <ul class="ch-peppers"><li>Serrano based</li><li>Even parts Jalapeño &amp; Habanero</li><li>A hint of Ginger</li></ul>
+        </div>
+      </article>
+
+      <article class="chapter" data-sauce="ichiban" style="--accent:#ff3b18;--fill:.74">
+        <div class="ch-num" aria-hidden="true">7</div>
+        <div class="ch-left">
+          <p class="ch-rating"><b>VEI 7</b> Hot</p>
+          <h3>Ichiban</h3>
+        </div>
+        <div class="ch-right">
+          <img decoding="async" class="ch-art" src="assets/art/ichiban.webp" alt="Ichiban label art" />
+          <p class="ch-tag">The Original</p>
+          <p class="ch-desc">The first sauce they ever made, and the recipe has not changed. Same profile as Zaxe, a lot more heat.</p>
+          <ul class="ch-peppers"><li>Habanero based</li></ul>
+        </div>
+      </article>
+
+      <article class="chapter" data-sauce="amy" style="--accent:#ff5cae;--fill:1">
+        <div class="ch-num" aria-hidden="true">8</div>
+        <div class="ch-left">
+          <p class="ch-rating"><b>VEI 8</b> Hot</p>
+          <h3>Amy's<br />Sweet<br />Heat</h3>
+        </div>
+        <div class="ch-right">
+          <img decoding="async" class="ch-art" src="assets/art/amy.webp" alt="Amy's Sweet Heat label art" />
+          <p class="ch-tag">Now With Scorpion Kiss</p>
+          <p class="ch-desc">Habanero mango is made by everyone, so they went another way. Lots of sweet mango. Lots of bite from the third hottest pepper in the world.</p>
+          <ul class="ch-peppers"><li>Scorpion based</li><li>Mango</li></ul>
+        </div>
+      </article>
+    </section>
+
+    <section id="lineup">
+      <figure class="lineup-frame">
+        <img decoding="async" src="assets/photo/lineup.webp" alt="Volcano Sauce bottles lined up on a wooden shelf" width="2160" height="1392" />
+      </figure>
+      <p class="lineup-cap">Five ounces each. <em>Out of Knoxville, Tennessee.</em></p>
+    </section>
+
+    <section class="tapes" id="tape1" aria-hidden="true">
+      <div class="tape tape-b"><div class="tape-run"></div></div>
+      <div class="tape tape-a"><div class="tape-run"></div></div>
+    </section>
+
+    <section id="wall">
+      <div class="wall-track">
+        <header class="wall-head">
+          <p class="kicker">The Art</p>
+          <h2>Every bottle is a comic book cover.</h2>
+          <p>The number on the front warns you. The artwork finishes the job.</p>
+        </header>
+        <figure class="card"><img decoding="async" src="assets/art/verde.webp" alt="Ryn's Mellow Verde label" /><figcaption><span>Ryn's Mellow Verde</span><b>1</b></figcaption></figure>
+        <figure class="card"><img decoding="async" src="assets/art/zaxe.webp" alt="Zaxe Sauce label" /><figcaption><span>Zaxe Sauce</span><b>2</b></figcaption></figure>
+        <figure class="card"><img decoding="async" src="assets/art/ragin.webp" alt="Ragin' Cajun label" /><figcaption><span>Ragin' Cajun</span><b>4</b></figcaption></figure>
+        <figure class="card"><img decoding="async" src="assets/art/shine.webp" alt="Shine the Light label" /><figcaption><span>Shine the Light</span><b>6</b></figcaption></figure>
+        <figure class="card"><img decoding="async" src="assets/art/ichiban.webp" alt="Ichiban label" /><figcaption><span>Ichiban</span><b>7</b></figcaption></figure>
+        <figure class="card"><img decoding="async" src="assets/art/amy.webp" alt="Amy's Sweet Heat label" /><figcaption><span>Amy's Sweet Heat</span><b>8</b></figcaption></figure>
+      </div>
+    </section>
+
+    <section id="makers">
+      <div class="faceoff-pin">
+      <div class="faceoff">
+        <div class="portrait portrait-l" role="img" aria-label="Ink portrait of one of the makers" style="-webkit-mask-image:url(assets/portrait-left.webp);mask-image:url(assets/portrait-left.webp)"></div>
+        <h2>Two faces on every label.</h2>
+        <div class="portrait portrait-r" role="img" aria-label="Ink portrait of the other maker" style="-webkit-mask-image:url(assets/portrait-right.webp);mask-image:url(assets/portrait-right.webp)"></div>
+      </div>
+      </div>
+      <div class="makers-body">
+        <figure class="founders">
+          <img decoding="async" src="assets/photo/founders.webp" alt="John and Terry standing together in a kitchen, drinks in hand" width="1620" height="1425" />
+        </figure>
+        <div class="makers-copy">
+          <p class="vet-badge">✶ Veteran Owned ✶</p>
+          <p class="lede">John and Terry put themselves on the bottle, right under the mushroom cloud.</p>
+          <p>Their first sauce was Ichiban. The recipe has not changed. The peppers are locally grown, the flavors are natural, and the rest is between you and the Index.</p>
+          <blockquote>
+            <p>"10 out of 10 recommend trying these sauces!"</p>
+            <footer>Derek D. on Facebook <span>100% recommend across 6 reviews</span></footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section class="tapes" id="tape2" aria-hidden="true">
+      <div class="tape tape-b"><div class="tape-run"></div></div>
+      <div class="tape tape-a"><div class="tape-run"></div></div>
+    </section>
+
+    <section id="find" class="screen">
+      <div class="find-inner">
+        <img decoding="async" class="find-emblem" src="assets/emblem.webp" alt="John & Terry's Volcano Sauce emblem" width="1320" height="1516" />
+        <div class="find-copy">
+          <p class="kicker">Veteran owned. No cart. No checkout.</p>
+          <h2>Come get burned.</h2>
+          <p class="find-sub">This site doesn't sell a single bottle. Want one? Talk to the guys who make it.</p>
+          <ul class="find-links">
+            <li><a href="tel:+18659385719"><span>Call</span>(865) 938-5719</a></li>
+            <li><a href="mailto:johnandterryshotsauce@gmail.com"><span>Email</span><b class="mail">johnandterryshotsauce@gmail.com</b></a></li>
+            <li><a href="https://www.facebook.com/profile.php?id=100090587078507" target="_blank" rel="noopener"><span>Follow</span>Facebook</a></li>
+          </ul>
+        </div>
+      </div>
+      <footer class="foot">
+        <p>John and Terry's Spice of Life</p>
+        <p>Veteran Owned / Knoxville, Tennessee</p>
+        <p>&copy; <span id="year">2026</span></p>
+      </footer>
+    </section>
+  </main>
+
+  <canvas id="bottle" aria-hidden="true"></canvas>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

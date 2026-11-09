@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.claude/
+.claude-flow/
+.DS_Store
+.env*
+
+# Raw client files stay local; the optimized versions live in src/public/assets
+/*.jpg
+/*.pdf
