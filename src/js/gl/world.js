@@ -43,18 +43,30 @@ export function stageState(p) {
   return { i, next, t, back };
 }
 
+function shrink(img, width) {
+  const c = document.createElement('canvas');
+  c.width = width;
+  c.height = Math.round((img.naturalHeight / img.naturalWidth) * width);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+
 export class GLWorld {
   constructor({ lavaCanvas, bottleCanvas, world, lowPower, labelImages }) {
     this.world = world;
+    this.lowPower = lowPower;
+    this.lastLava = -1;
+    this.lastField = -1;
+    this.bottleOn = true;
     this.lava = new LavaLayer(lavaCanvas, { lowPower });
 
-    this.renderer = new THREE.WebGLRenderer({ canvas: bottleCanvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+    this.renderer = new THREE.WebGLRenderer({ canvas: bottleCanvas, alpha: true, antialias: !lowPower, powerPreference: 'high-performance' });
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.toneMapping = THREE.NeutralToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.maxDpr = lowPower ? 1.5 : 2;
     // A pixel budget, not just a DPR cap: a big external monitor must not cost more than a laptop screen
-    this.maxPixels = lowPower ? 1.5e6 : 3.4e6;
+    this.maxPixels = lowPower ? 0.8e6 : 3.4e6;
     this.quality = 1;
     this.dtAvg = 1 / 60;
     this.tick = 0;
@@ -65,7 +77,7 @@ export class GLWorld {
 
     const maxAniso = this.renderer.capabilities.getMaxAnisotropy();
     const labels = labelImages.map((img) => {
-      const t = new THREE.Texture(img);
+      const t = new THREE.Texture(lowPower ? shrink(img, 640) : img);
       t.colorSpace = THREE.SRGBColorSpace;
       t.anisotropy = Math.min(8, maxAniso);
       t.needsUpdate = true;
@@ -80,8 +92,8 @@ export class GLWorld {
     this.under.position.set(0, -8, 6);
     this.scene.add(this.key, this.under);
 
-    this.embers = createEmbers(lowPower ? 110 : 280);
-    this.burst = createBurst(lowPower ? 220 : 560);
+    this.embers = createEmbers(lowPower ? 50 : 280);
+    this.burst = createBurst(lowPower ? 110 : 560);
     this.overlay = createOverlay();
     this.scene.add(this.embers, this.burst, this.overlay.mesh);
     this.emberT = 0;
@@ -172,11 +184,16 @@ export class GLWorld {
     w.time = timeSec;
     this.updateDerived();
 
-    // On 120Hz screens the lava runs at 60; the slow-moving field can't show the difference, the GPU can
+    // The lava is slow-moving, so it never needs the display's full rate. The field is the costly pass and runs least.
     this.dtAvg += (Math.min(dt, 0.05) - this.dtAvg) * 0.06;
     this.tick++;
-    if (this.dtAvg > 0.0115 || this.tick % 2 === 0) {
-      this.lava.render({ ...w, heat: this.heat, dim: this.dim, flood: this.flood, shockR: this.shockR, shockA: this.shockA });
+    const lavaEvery = this.lowPower ? 1 / 31 : 1 / 61;
+    const fieldEvery = this.lowPower ? 1 / 21 : 1 / 31;
+    if (!w.lavaCovered && timeSec - this.lastLava >= lavaEvery) {
+      const drawField = timeSec - this.lastField >= fieldEvery;
+      this.lastLava = timeSec;
+      if (drawField) this.lastField = timeSec;
+      this.lava.render({ ...w, heat: this.heat, dim: this.dim, flood: this.flood, shockR: this.shockR, shockA: this.shockA }, drawField);
     }
 
     this.smoothMx += (w.mx - this.smoothMx) * 0.06;
@@ -200,13 +217,13 @@ export class GLWorld {
     const quake = this.shake * 0.55 + this.shockA * 1.1 + w.vel * 0.25;
     this.camera.position.x = Math.sin(timeSec * 47) * 0.075 * quake;
     this.camera.position.y = Math.cos(timeSec * 53) * 0.075 * quake;
-    this.setDomShake(timeSec, this.shake * 0.18 + this.shockA * 0.9);
+    this.setDomShake(timeSec, this.lowPower ? 0 : this.shockA * 0.9);
     this.under.color.setRGB(w.c2.x, w.c2.y, w.c2.z, THREE.SRGBColorSpace);
 
     this.emberT += Math.max(0, Math.min(dt, 0.1)) * (1 + w.vel * 7);
     const e = this.embers.material.uniforms;
     e.uTime.value = this.emberT;
-    e.uIntensity.value = w.embers * (0.65 + this.heat * 0.7) * (1 + w.vel * 1.4);
+    e.uIntensity.value = w.embers * clamp01((w.embers - 0.4) / 0.2) * (0.65 + this.heat * 0.7) * (1 + w.vel * 1.4);
     e.uHot.value.copy(w.c3);
     e.uMid.value.copy(w.c2);
 
@@ -219,6 +236,15 @@ export class GLWorld {
     b.uMid.value.copy(w.c2);
 
     this.overlay.update(w, { time: timeSec, aspect: this.aspect, shockR: this.shockR, shockA: this.shockA, flash: this.flash });
+
+    // With no bottle, curtain or sparks in play the whole layer leaves the compositor
+    const active = g.visible || this.overlay.mesh.visible || this.burst.visible || w.embers > 0.4;
+    if (active !== this.bottleOn) {
+      this.bottleOn = active;
+      this.renderer.domElement.style.visibility = active ? '' : 'hidden';
+    }
+    if (!active) return;
+    if (this.lowPower && this.degraded && this.dtAvg < 0.025 && this.tick % 2) return;
     this.renderer.render(this.scene, this.camera);
   }
 

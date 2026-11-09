@@ -4,6 +4,7 @@ import { SAUCES } from './data.js';
 
 const $ = (s, root = document) => root.querySelector(s);
 const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+const lite = () => document.documentElement.classList.contains('lite');
 
 export const STAGE_P0 = 0.03;
 export const STAGE_P1 = 0.865;
@@ -23,8 +24,14 @@ export function setupHero({ tl }) {
 
 export function setupManifesto({ tl }) {
   const words = new SplitText('.manifesto-text', { type: 'words' }).words;
-  gsap.set(words, { opacity: 0.1, y: 46, rotateX: -60, transformPerspective: 700, color: '#ffb22e' });
   const n = words.length;
+  if (lite()) {
+    gsap.set(words, { opacity: 0.12, y: 26 });
+    words.forEach((w, i) => tl.to(w, { opacity: 1, y: 0, duration: 0.03 }, 0.05 + (i / n) * 0.66));
+    tl.to(words, { y: -50, opacity: 0, stagger: { amount: 0.08 }, duration: 0.07 }, 0.85);
+    return;
+  }
+  gsap.set(words, { opacity: 0.1, y: 46, rotateX: -60, transformPerspective: 700, color: '#ffb22e' });
   words.forEach((w, i) => {
     const inEm = w.closest('em');
     const pos = 0.05 + (i / n) * 0.66;
@@ -102,8 +109,13 @@ export function setupScale({ tl }) {
 export function setupStage({ tl }) {
   const chapters = $$('.chapter');
   chapters.forEach((ch, i) => {
-    const split = new SplitText($('h3', ch), { type: 'lines,chars', linesClass: 'ch-line', charsClass: 'ch-char' });
-    gsap.set(split.chars, { transformPerspective: 500, transformOrigin: '50% 100%' });
+    const light = lite();
+    const split = new SplitText($('h3', ch), { type: light ? 'lines' : 'lines,chars', linesClass: 'ch-line', charsClass: 'ch-char' });
+    if (!light) gsap.set(split.chars, { transformPerspective: 500, transformOrigin: '50% 100%' });
+    const parts = light ? split.lines : split.chars;
+    const partsFrom = light ? { y: 26, autoAlpha: 0 } : { yPercent: 125, rotateX: -85 };
+    const partsIn = light ? { y: 0, autoAlpha: 1 } : { yPercent: 0, rotateX: 0 };
+    const partsOut = light ? { y: -26, autoAlpha: 0 } : { yPercent: -125, rotateX: 85 };
     const num = $('.ch-num', ch);
     const rest = $$('.ch-rating, .ch-tag, .ch-desc, .ch-peppers', ch);
     const inStart = i === 0 ? 0 : stageAt(i - 0.3);
@@ -114,11 +126,11 @@ export function setupStage({ tl }) {
     tl.set(ch, { visibility: 'visible' }, inStart);
     if (i > 0) {
       tl.fromTo(num, { autoAlpha: 0, scale: 2.6, rotate: i % 2 ? 12 : -12 }, { autoAlpha: 1, scale: 1, rotate: 0, ease: 'expo.out', duration: inDur * 1.1 }, inStart);
-      tl.fromTo(split.chars, { yPercent: 125, rotateX: -85 }, { yPercent: 0, rotateX: 0, ease: 'expo.out', duration: inDur, stagger: 0.001 }, inStart + 0.004);
+      tl.fromTo(parts, partsFrom, { ...partsIn, ease: 'expo.out', duration: inDur, stagger: 0.001 }, inStart + 0.004);
       tl.fromTo(rest, { autoAlpha: 0, x: 50 }, { autoAlpha: 1, x: 0, ease: 'power3.out', duration: inDur * 0.9, stagger: 0.003 }, inStart + 0.008);
     }
     if (i < chapters.length - 1) {
-      tl.to(split.chars, { yPercent: -125, rotateX: 85, ease: 'power3.in', duration: outDur, stagger: 0.0007 }, outStart);
+      tl.to(parts, { ...partsOut, ease: 'power3.in', duration: outDur, stagger: 0.0007 }, outStart);
       tl.to(rest, { autoAlpha: 0, x: -50, ease: 'power2.in', duration: outDur * 0.7, stagger: 0.002 }, outStart);
       tl.to(num, { autoAlpha: 0, scale: 0.4, rotate: i % 2 ? -14 : 14, ease: 'power2.in', duration: outDur }, outStart);
       tl.set(ch, { visibility: 'hidden' }, outStart + outDur + 0.003);

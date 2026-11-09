@@ -26,7 +26,7 @@ const LAVA_FRAG = /* glsl */ `
   float fbm(vec2 p) {
     float s = 0., a = .5;
     mat2 m = mat2(.8, .6, -.6, .8);
-    for (int i = 0; i < 5; i++) { s += a * noise(p); p = m * p * 2.03; a *= .5; }
+    for (int i = 0; i < OCTAVES; i++) { s += a * noise(p); p = m * p * 2.03; a *= .5; }
     return s;
   }
   // Distance to the nearest plate border (Voronoi F2-style border distance)
@@ -214,6 +214,7 @@ export class LavaLayer {
     this.lavaMat = new THREE.ShaderMaterial({
       vertexShader: VERT,
       fragmentShader: LAVA_FRAG,
+      defines: { OCTAVES: lowPower ? 3 : 5 },
       depthTest: false,
       uniforms: {
         uTime: { value: 0 }, uHeat: { value: 0.7 }, uFlood: { value: 0.9 }, uAspect: { value: 1 }, uCalm: { value: 0.6 },
@@ -275,7 +276,8 @@ export class LavaLayer {
     this.resize(window.innerWidth, window.innerHeight);
   }
 
-  render(world) {
+  /** The field is the expensive pass and moves slowly, so the caller runs it less often than the composite. */
+  render(world, drawField = true) {
     const l = this.lavaMat.uniforms;
     const c = this.compMat.uniforms;
     l.uTime.value = world.time;
@@ -298,9 +300,11 @@ export class LavaLayer {
     c.uShockR.value = world.shockR;
     c.uShockA.value = world.shockA;
 
-    this.renderer.setRenderTarget(this.target);
-    this.renderer.render(this.lavaScene, this.camera);
-    this.renderer.setRenderTarget(null);
+    if (drawField) {
+      this.renderer.setRenderTarget(this.target);
+      this.renderer.render(this.lavaScene, this.camera);
+      this.renderer.setRenderTarget(null);
+    }
     c.tLava.value = this.target.texture;
     this.renderer.render(this.compScene, this.camera);
   }

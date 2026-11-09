@@ -196,6 +196,12 @@ function buildEnvironment(renderer) {
 }
 
 export function createBottle(renderer, labelTextures, lowPower) {
+  // Phones get the same look without the second specular layer
+  const surface = (params) => {
+    if (!lowPower) return new THREE.MeshPhysicalMaterial(params);
+    const { clearcoat, clearcoatRoughness, specularIntensity, ior, ...rest } = params;
+    return new THREE.MeshStandardMaterial(rest);
+  };
   const env = buildEnvironment(renderer);
   const group = new THREE.Group();
   const inner = new THREE.Group();
@@ -203,7 +209,7 @@ export function createBottle(renderer, labelTextures, lowPower) {
   group.add(inner);
 
   // Sauce
-  const sauceMat = new THREE.MeshPhysicalMaterial({
+  const sauceMat = surface({
     color: 0xb03a12, map: fleckTexture(), roughness: 0.42, clearcoat: 0.25, envMap: env, envMapIntensity: 0.5,
     emissive: 0xb03a12, emissiveIntensity: 0.07,
   });
@@ -220,7 +226,7 @@ export function createBottle(renderer, labelTextures, lowPower) {
 
   // Glass: reflections only (additive), so whatever sits behind the neck shows through
   const glassGeo = new THREE.LatheGeometry(glassProfile(), 128);
-  const glassMat = new THREE.MeshPhysicalMaterial({
+  const glassMat = surface({
     color: 0x000000, roughness: 0.05, envMap: env, envMapIntensity: 1.5, specularIntensity: 1, ior: 1.52,
     transparent: true, blending: THREE.AdditiveBlending, depthWrite: false,
   });
@@ -241,24 +247,24 @@ export function createBottle(renderer, labelTextures, lowPower) {
   inner.add(neckTint);
 
   // Cap and shrink seal
-  const capMat = new THREE.MeshPhysicalMaterial({ color: 0x060607, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, envMap: env, envMapIntensity: 1.2 });
+  const capMat = surface({ color: 0x060607, roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12, envMap: env, envMapIntensity: 1.2 });
   inner.add(new THREE.Mesh(capGeometry(), capMat));
-  const bandMat = new THREE.MeshPhysicalMaterial({ color: 0x08080a, roughness: 0.5, clearcoat: 0.5, envMap: env, envMapIntensity: 0.9 });
+  const bandMat = surface({ color: 0x08080a, roughness: 0.5, clearcoat: 0.5, envMap: env, envMapIntensity: 0.9 });
   inner.add(new THREE.Mesh(shrinkBand(), bandMat));
 
   // Label
   const LABEL_H = 3.74;
   const LABEL_Y = 0.36 + LABEL_H / 2;
   // Every print goes to the GPU up front, so no swap can hitch the scroll
-  const backs = SAUCES.map((s) => backPanel(s, lowPower ? 0.75 : 1));
+  const backs = SAUCES.map((s) => backPanel(s, lowPower ? 0.6 : 1));
   [...backs, ...labelTextures].forEach((t) => renderer.initTexture(t));
-  const paperMat = new THREE.MeshPhysicalMaterial({ map: backs[0], roughness: 0.48, clearcoat: 0.3, clearcoatRoughness: 0.4, envMap: env, envMapIntensity: 0.55 });
+  const paperMat = surface({ map: backs[0], roughness: 0.48, clearcoat: 0.3, clearcoatRoughness: 0.4, envMap: env, envMapIntensity: 0.55 });
   const paper = new THREE.Mesh(new THREE.CylinderGeometry(1.012, 1.012, LABEL_H, 128, 1, true), paperMat);
   paper.position.y = LABEL_Y;
   inner.add(paper);
 
   const arc = (LABEL_H * (1104 / 1976)) / 1.018;
-  const artMat = new THREE.MeshPhysicalMaterial({ map: labelTextures[0], roughness: 0.46, clearcoat: 0.3, clearcoatRoughness: 0.4, envMap: env, envMapIntensity: 0.55 });
+  const artMat = surface({ map: labelTextures[0], roughness: 0.46, clearcoat: 0.3, clearcoatRoughness: 0.4, envMap: env, envMapIntensity: 0.55 });
   const art = new THREE.Mesh(new THREE.CylinderGeometry(1.018, 1.018, LABEL_H, 72, 1, true, -arc / 2, arc), artMat);
   art.position.y = LABEL_Y;
   inner.add(art);

@@ -84,7 +84,8 @@ async function boot() {
     fontsReady.then(bump),
   ]);
 
-  const lowPower = window.innerWidth < 821 || (navigator.hardwareConcurrency || 8) <= 4;
+  const lowPower = window.innerWidth < 821 || window.matchMedia('(pointer: coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+  html.classList.toggle('lite', lowPower);
   const world = createWorldState();
   const gl = new GLWorld({
     lavaCanvas: document.getElementById('lava'),
@@ -124,7 +125,8 @@ async function boot() {
   });
 
   // Decode every picture off-thread now, so none of them hitches the first time it scrolls into view
-  document.querySelectorAll('img').forEach((img) => img.decode().catch(() => {}));
+  // Phones keep the browser's lazy loading to spare memory.
+  if (!lowPower) document.querySelectorAll('img:not(.ch-art)').forEach((img) => { img.loading = 'eager'; img.decode().catch(() => {}); });
 
   // Let the counter finish, then split the ground open
   await gsap.to(progress, { p: 1, duration: 0.5, ease: 'power2.inOut', overwrite: true }).then();

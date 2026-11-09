@@ -166,7 +166,8 @@ export function initChoreo({ world, lenis }) {
       numEl.textContent = rounded;
     }
     const skew = world.velS * -7;
-    if (Math.abs(skew - lastSkew) > 0.03) skewHeads((lastSkew = skew));
+    if (desktop && Math.abs(skew - lastSkew) > 0.03) skewHeads((lastSkew = skew));
+    world.lavaCovered = scrollY > t.lineup.start + 8 && scrollY < t.lineup.end - 8;
     wall.frame(scrollY, world);
   };
 }

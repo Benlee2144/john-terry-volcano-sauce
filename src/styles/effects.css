@@ -17,7 +17,7 @@ html { overflow-x: clip; }
 .hero-names, .hero-foot, .manifesto-text, #scale h2, .scale-sub, .scale-name, .scale-n,
 .chapter h3, .ch-rating, .ch-tag, .ch-desc, .wall-head h2, .wall-head p, .card figcaption,
 .lede, .makers-copy p, .makers-copy footer, .gauge-read, .faceoff h2 {
-  text-shadow: 0 1px 3px rgba(0,0,0,.85), 0 2px 18px rgba(0,0,0,.95);
+  text-shadow: var(--read-shadow, 0 1px 3px rgba(0,0,0,.85), 0 2px 18px rgba(0,0,0,.95));
 }
 .hero-foot { font-size: clamp(11px, .88vw, 14px); font-weight: 600; }
 .hero-foot p { color: #fff; }
@@ -181,3 +181,11 @@ html:not(.motion) .ch-art { margin-block: 18px; }
   .find-emblem { max-height: 13vh; }
   .find-links { margin-top: 10px; }
 }
+
+/* Phones and low-core machines: the same page without the paint-heavy extras */
+.lite { --read-shadow: 0 1px 8px rgba(0,0,0,.95); }
+.lite .wall-track, .lite .card, .lite .portrait, .lite .tape-run { will-change: auto; }
+.lite .tape { box-shadow: none; }
+.lite .find-emblem { filter: none; }
+.lite .scale-seis path.glow { display: none; }
+.lite .scale-bar { box-shadow: 0 0 10px 2px var(--c); }
